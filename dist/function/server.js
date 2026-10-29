@@ -49,3 +49,5 @@ app.get("/logout", (req, res) => {
 app.listen(port, () => {
   console.log("http://localhost:3000");
 });
+
+export const handlen = ServerlessHttp(app)
