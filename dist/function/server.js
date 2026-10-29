@@ -1,58 +1,51 @@
-import express from "express";
+const express = require("express");
+const path = require("path");
 
 const app = express();
-
-const bodyParser = require("path");
-
 const port = 3000;
+const distDir = path.join(__dirname, "..");
 
-const __dirname = path.resolve();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-app.use(bodyParser.json);
-
-app.use(bodyParser.urlencoded({extended:true}));
-
-app.get("/",(req, res) => {
-    res.sendFile(__dirname + "/index.html")
-})
-
-const allUsers=[];
-
-app.get("/getAllusers", (req, res) => {
-    res.json(allUsers)
-})
-
-app.get("/signup", (req, res) => {
-    const {username,password} = req.body;
-    
-    const newUser = {username,password};
-
-    allUsers.push(newUser);
-
-    res.sendStatus(200,"Ma'lumotlar yuborildi")
-})
-
-app.post('/signup', (req, res) => {
-    const { username, password } = req.body;
-
-
-    if (username === 'admin' && password === '12345') {
-    
-        return res.redirect('/dashboard');
-    } else {
-   
-        return res.redirect('/login?error=1');
-    }
+app.get("/", (req, res) => {
+  res.sendFile(path.join(distDir, "index.html"));
 });
 
-const path = require('path');
+app.get("/login", (req, res) => {
+  res.sendFile(path.join(distDir, "index.html"));
+});
 
-app.get('/dashboard', (req, res) => {
-    res.sendFile(path.join(__dirname, 'dashboard.html'));
-})
+const allUsers = [];
 
-app.listen(port,() => {
-    console.log("http://localhost:3000")
-})
+app.get("/getAllusers", (req, res) => {
+  res.json(allUsers);
+});
 
-export const handlen = ServerlessHttpCapp(app)
+app.post("/signup", (req, res) => {
+  const { username, password } = req.body || {};
+
+  if (!username || !password) {
+    return res.status(400).send("Username and password are required");
+  }
+
+  allUsers.push({ username, password });
+
+  if (username === "admin" && password === "12345") {
+    return res.redirect("/dashboard");
+  }
+
+  return res.redirect("/login?error=1");
+});
+
+app.get("/dashboard", (req, res) => {
+  res.sendFile(path.join(distDir, "dashboard.html"));
+});
+
+app.get("/logout", (req, res) => {
+  res.redirect("/");
+});
+
+app.listen(port, () => {
+  console.log("http://localhost:3000");
+});
