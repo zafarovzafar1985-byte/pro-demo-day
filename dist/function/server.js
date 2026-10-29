@@ -49,8 +49,10 @@ const path = require('path');
 
 app.get('/dashboard', (req, res) => {
     res.sendFile(path.join(__dirname, 'dashboard.html'));
-});
+})
 
 app.listen(port,() => {
     console.log("http://localhost:3000")
 })
+
+export const handlen = ServerlessHttpCapp(app)
